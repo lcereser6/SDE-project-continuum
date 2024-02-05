@@ -1,10 +1,12 @@
 from flask import Flask, redirect, url_for, session, request, jsonify, render_template
 from requests_oauthlib import OAuth2Session
 import os
+from dotenv import load_dotenv
 
 # This information is obtained upon registration of a new GitHub OAuth application here: https://github.com/settings/applications/new
-client_id = ""
-client_secret = ""
+
+client_id = os.getenv("GITHUB_CLIENT_ID")
+client_secret = os.getenv("GITHUB_CLIENT_SECRET")
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
@@ -86,6 +88,7 @@ def logout():
 
 if __name__ == "__main__":
     # Run the application on http://127.0.0.1:5000/
+    #load environment variables
+    load_dotenv()
     
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     app.run(debug=True)
