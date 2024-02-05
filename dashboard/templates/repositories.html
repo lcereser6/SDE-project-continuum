@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }}'s Repositories</title>
+</head>
+<body>
+    <h1>{{ username }}'s Repositories</h1>
+    <ul>
+        {% for repo in repos %}
+            <li><a href="{{ repo.html_url }}">{{ repo.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('profile') }}">Back to Profile</a>
+</body>
+</html>
