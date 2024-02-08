@@ -1,7 +1,10 @@
+import json
 from flask import Flask, redirect, url_for, session, request, jsonify, render_template
 from requests_oauthlib import OAuth2Session
 import os
 from dotenv import load_dotenv
+
+from RMQueue import RMQueue
 
 # This information is obtained upon registration of a new GitHub OAuth application here: https://github.com/settings/applications/new
 
@@ -80,6 +83,16 @@ def repositories():
     # Render the repositories template with the list of repositories
     return render_template('repositories.html', username=username, repos=repos_info)
 
+@app.route("/star_repo/<repo_name>", methods=["GET"])
+def star_repo(repo_name):
+    # Here, you would implement the logic to "star" the repository.
+    # This might involve calling the GitHub API to star a repository using the oauth_token.
+    # For simplicity, this example will just print the repo_name and redirect.
+    print(f"Starring repository: {repo_name}")
+    queue.send(json.dumps({"repo_name": repo_name}))
+    # Implement your logic here...
+    return redirect(url_for('.repositories'))
+
 
 @app.route("/logout")
 def logout():
@@ -89,6 +102,11 @@ def logout():
 if __name__ == "__main__":
     # Run the application on http://127.0.0.1:5000/
     #load environment variables
-    load_dotenv()
+
+    #TODO Remove this line when deploying to docker
+    #load_dotenv("../.env")
+
+    queue = RMQueue()
+
     
-    app.run(debug=True)
+    app.run(debug=True ,host='0.0.0.0')

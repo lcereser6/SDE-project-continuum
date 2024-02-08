@@ -1,3 +1,4 @@
+{% if session['oauth_token'] %}
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
   <head>
@@ -245,7 +246,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" href="/repositories">
 
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-git" viewBox="0 0 16 16">
@@ -308,7 +309,6 @@
       </div>
       
       <!-- https://rawcdn.githack.com/rabbitmq/rabbitmq-server/v3.12.12/deps/rabbitmq_management/priv/www/api/index.html -->
-      <iframe src="http://localhost:15672/" width="800" height="600"></iframe>
 
 
       <h2>Section title</h2>
@@ -448,3 +448,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
 </html>
+{% else %}
+<h1> Not Authorized</h1>
+{% endif %}
