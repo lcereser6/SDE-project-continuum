@@ -100,13 +100,6 @@ def logout():
     return redirect(url_for('.index'))
 
 if __name__ == "__main__":
-    # Run the application on http://127.0.0.1:5000/
-    #load environment variables
-
-    #TODO Remove this line when deploying to docker
-    #load_dotenv("../.env")
-
-    queue = RMQueue()
 
     from waitress import serve
-    serve(app, host="0.0.0.0")
+    serve(app, host="0.0.0.0", port=5000)
