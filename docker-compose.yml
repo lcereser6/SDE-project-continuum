@@ -38,6 +38,3 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-
-  
-  # Other services like database, deployer, interpreter can be added similarly
