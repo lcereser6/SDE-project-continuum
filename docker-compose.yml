@@ -14,7 +14,7 @@ services:
     build: 
       context: ./dashboard
       dockerfile: Dockerfile
-    command: python app.py
+    command: python dashboard.py
     volumes:
       - ./dashboard:/app
     ports:
@@ -27,10 +27,11 @@ services:
       - OAUTHLIB_INSECURE_TRANSPORT=${OAUTHLIB_INSECURE_TRANSPORT}
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - FLASK_ENV=${FLASK_ENV}
 
   orchestrator:
     build: ./orchestrator
-    command: python main.py
+    command: python orchestrator.py
     volumes:
       - ./orchestrator:/app
     depends_on:
@@ -38,3 +39,4 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - FLASK_ENV=${FLASK_ENV}
