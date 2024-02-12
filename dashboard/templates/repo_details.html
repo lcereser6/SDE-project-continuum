@@ -295,7 +295,7 @@
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">{{ username }}'s repositories</h1>
+        <h1 class="h2"> {{ repo_info['name'] }} </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group me-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -309,30 +309,47 @@
       </div>
 
 
-
-  <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary">
-    <div class="list-group list-group-flush border-bottom scrollarea">
-      {% for repo in repos %}
-
-      <a href="{{ url_for('repo_details', repo_name=repo.name) }}" class="list-group-item list-group-item-action py-3 lh-sm d-flex align-items-center">
-        <img src="{{ url_for('static', filename='img/cicdon.png') }}" style="width: 50px; height: 50px; margin-right: 10px;">
-        <div class="d-flex flex-column" style="flex-grow: 1;">
-            <div class="d-flex justify-content-between">
-                <strong class="mb-1">{{ repo.name }}</strong>
-                <small class="text-body-secondary">{{ repo.html_url }}</small>
-            </div>
-            <div class="mb-1 small">{{ repo.description }}</div>
-        </div>
-    </a>
-
-
-  {% endfor %}
-    </div>
-  </div>
+      <!-- add button here-->
+      <button id="buildBtn" class="btn btn-primary" data-repo-name="{{ repo_info['name'] }}">Build</button>
 
     </main>
   </div>
 </div>
+<script>
+  document.getElementById('buildBtn').addEventListener('click', function() {
+      var repoName = this.getAttribute('data-repo-name');
+      fetch('{{ url_for("trigger_build") }}', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+          },
+          body: JSON.stringify({repo_name: repoName})
+      })
+      .then(response => {
+          if (!response.ok) {
+              // If the server response was not ok (200-299), throw an error
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          // Assuming your backend sends different messages for success/failure
+          if(data.message) {
+              alert(data.message);
+          } else {
+              alert('Build triggered successfully!');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to trigger build');
+      });
+  });
+</script>
+
+
+
 <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
