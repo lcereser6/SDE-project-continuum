@@ -6,4 +6,4 @@ RUN python -m  pipreqs.pipreqs . --force
 RUN pip install --no-cache-dir -r requirements.txt
 RUN ls -la /app  # This will list the contents of /app
 
-CMD ["python", "orchestrator.py"]
+CMD ["flask", "run"]

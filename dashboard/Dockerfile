@@ -19,7 +19,5 @@ RUN ls -la /app  # This will list the contents of /app
 EXPOSE 5000
 
 # Define environment variable
-ENV FLASK_APP=dashboard.py
-
 # Run app.py when the container launches
-CMD ["python", "dashboard.py"]
+CMD ["flask", "run"]
