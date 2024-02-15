@@ -14,13 +14,14 @@ services:
     build: 
       context: ./dashboard
       dockerfile: Dockerfile
-    command: python dashboard.py
+    command: flask run
     volumes:
       - ./dashboard:/app
     ports:
       - "5000:5000"
     depends_on:
       - rabbitmq
+      - redis
     environment:
       - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
       - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
@@ -28,19 +29,35 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
       - FLASK_ENV=${FLASK_ENV}
-
+      - SESSION_TYPE=${SESSION_TYPE}
+      - SESSION_PERMANENT=${SESSION_PERMANENT}
+      - SESSION_USE_SIGNER=${SESSION_USE_SIGNER}
+      - SESSION_REDIS=${SESSION_REDIS}
+      - FLASK_APP=dashboard.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - FLASK_DEBUG=${FLASK_DEBUG}
   orchestrator:
     build: ./orchestrator
-    command: python orchestrator.py
+    command: flask run
     volumes:
       - ./orchestrator:/app
     depends_on:
       - rabbitmq
+      - redis
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
       - FLASK_ENV=${FLASK_ENV}
-
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - OAUTHLIB_INSECURE_TRANSPORT=${OAUTHLIB_INSECURE_TRANSPORT}
+      - SESSION_TYPE=${SESSION_TYPE}
+      - SESSION_PERMANENT=${SESSION_PERMANENT}
+      - SESSION_USE_SIGNER=${SESSION_USE_SIGNER}
+      - FLASK_APP=orchestrator.py
+      - FLASK_RUN_HOST=0.0.0.0      
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - FLASK_DEBUG=${FLASK_DEBUG}
   dbproxy:
     build: ./dbproxy
     command: python dbproxy.py
@@ -52,6 +69,15 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
       - FLASK_ENV=${FLASK_ENV}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgre
+      - SESSION_TYPE=${SESSION_TYPE}
+      - SESSION_PERMANENT=${SESSION_PERMANENT}
+      - SESSION_USE_SIGNER=${SESSION_USE_SIGNER}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - FLASK_DEBUG=${FLASK_DEBUG}
 
   postgre:
     image: "postgres:13"
@@ -61,6 +87,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
   deployer:
     build: ./deployer
@@ -69,6 +97,7 @@ services:
       - ./deployer:/app
     depends_on:
       - rabbitmq
+      - redis
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
@@ -81,10 +110,14 @@ services:
       - ./tester:/app
     depends_on:
       - rabbitmq
+      - redis
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
       - FLASK_ENV=${FLASK_ENV}
+      - SESSION_TYPE=${SESSION_TYPE}
+      - SESSION_PERMANENT=${SESSION_PERMANENT}
+      - SESSION_USE_SIGNER=${SESSION_USE_SIGNER}
 
   interpreter:
     build: ./interpreter
@@ -93,7 +126,21 @@ services:
       - ./interpreter:/app
     depends_on:
       - rabbitmq
+      - redis
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
       - FLASK_ENV=${FLASK_ENV}
+      - SESSION_TYPE=${SESSION_TYPE}
+      - SESSION_PERMANENT=${SESSION_PERMANENT}
+      - SESSION_USE_SIGNER=${SESSION_USE_SIGNER}
+
+
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres-data:
