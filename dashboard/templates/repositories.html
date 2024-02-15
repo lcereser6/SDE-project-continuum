@@ -283,7 +283,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('logout') }}">
+              <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('auth.logout') }}">
                 <svg class="bi"><use xlink:href="#door-closed"/></svg>
                 Sign out
               </a>
@@ -314,7 +314,7 @@
     <div class="list-group list-group-flush border-bottom scrollarea">
       {% for repo in repos %}
 
-      <a href="{{ url_for('repo_details', repo_name=repo.name) }}" class="list-group-item list-group-item-action py-3 lh-sm d-flex align-items-center">
+      <a href="{{ url_for('profile.repo_details', repo_name=repo.name) }}" class="list-group-item list-group-item-action py-3 lh-sm d-flex align-items-center">
         <img src="{{ url_for('static', filename='img/cicdon.png') }}" style="width: 50px; height: 50px; margin-right: 10px;">
         <div class="d-flex flex-column" style="flex-grow: 1;">
             <div class="d-flex justify-content-between">

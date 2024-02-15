@@ -164,15 +164,9 @@
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">Login page for SDE project.</p>
       
-        {% if session['oauth_token'] %}
-        <p>You are logged in. Go to your <a href="{{ url_for('profile') }}">Profile</a>.</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <a href="{{ url_for('logout') }}"><button type="button" class="btn btn-outline-secondary btn-lg px-4">Logout</button></a>
-        {% else %}
-        <p>You are not logged in.</p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a href="{{ url_for('login') }}" style="color: white; text-decoration: none;"><button type="button" class="btn btn-primary btn-lg px-4 gap-3">Login with GitHub</button></a>
-        {% endif %}
+            <a href="{{ url_for('auth.login') }}" style="color: white; text-decoration: none;"><button type="button" class="btn btn-primary btn-lg px-4 gap-3">Login with GitHub</button></a>
+
       </div>
     </div>
 </div>
