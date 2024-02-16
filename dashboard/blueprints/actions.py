@@ -22,7 +22,7 @@ def trigger_action():
     params = {'repo_name': repo_name, 'action_type': action_type, 'oauth_token': session.get('oauth_token'), 'jwt_token': session.get("jwt_token")}  # Adjust based on the needs
     try:
         response = requests.post(rest_server_url, json=params)
-        if response.status_code == 200:
+        if response.status_code == 202:
             print(response)
             return jsonify({'message': 'Action triggered successfully!'}), 200
         else:

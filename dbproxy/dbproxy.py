@@ -50,30 +50,57 @@ def get_db_connection():
 #get all actions for a repo filtered by user and ordered by latest, extract username from jwt token
 @app.route("/api/v1/read-action/<repo>", methods=["GET"])
 
-def get_builds(repo):
+@app.route("/api/v1/read-action/<repo>", methods=["GET"])
+def get_actions(repo):
     username = validate_token(request.headers.get("Authorization").split(" ")[1])
-    print(username,flush=True)
-    print(repo,flush=True)
+    if username is None:
+        return jsonify({"error": "Unauthorized"}), 401
+
     query = """
-        SELECT * 
+        SELECT action_uid, git_user_uid, time_action_start, git_repo_uid, git_commit_hash,
+               git_branch_name, git_repo_name, current_status, builder_status, tester_status,
+               deployer_status, builder_eta, tester_eta, deployer_eta, action_type,
+               scanner_status, scanner_eta
         FROM actions 
-        WHERE git_repo_name = %s
-        AND git_user_uid = %s
+        WHERE git_repo_name = %s AND git_user_uid = %s
         ORDER BY time_action_start DESC
     """
     try:
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(query, (repo, username))
-        builds = cur.fetchall()
+        rows = cur.fetchall()
+        # Convert each row to a dict with properly formatted dates
+        builds = [
+            {
+                "action_uid": row[0],
+                "git_user_uid": row[1],
+                "time_action_start": row[2].isoformat() if row[2] else None,
+                "git_repo_uid": row[3],
+                "git_commit_hash": row[4],
+                "git_branch_name": row[5],
+                "git_repo_name": row[6],
+                "current_status": row[7],
+                "builder_status": row[8],
+                "tester_status": row[9],
+                "deployer_status": row[10],
+                "builder_eta": row[11],
+                "tester_eta": row[12],
+                "deployer_eta": row[13],
+                "action_type": row[14],
+                "scanner_status": row[15],
+                "scanner_eta": row[16],
+            } for row in rows
+        ]
         cur.close()
         conn.close()
         return jsonify(builds), 200
     except Exception as e:
+        print(e, flush=True)
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/v1/write-action", methods=["POST"])
-def log_build():
+def log_action():
     build_info = request.get_json()
     query = """
         INSERT INTO actions (
@@ -92,8 +119,9 @@ def log_build():
             tester_eta,
             deployer_eta,
             action_type,
-            scanner_eta,
-            scanner_status
+            scanner_status,
+            scanner_eta
+
         ) VALUES (%s, %s, to_timestamp(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     data = (
@@ -112,8 +140,8 @@ def log_build():
         build_info["tester_eta"] if build_info["tester_eta"] != "None" else None,
         build_info["deployer_eta"] if build_info["deployer_eta"] != "None" else None,
         build_info["action_type"] if build_info["action_type"] != "None" else None,
-        build_info["scanner_eta"] if build_info["scanner_eta"] != "None" else None,
         build_info["scanner_status"] if build_info["scanner_status"] != "None" else None,
+        build_info["scanner_eta"] if build_info["scanner_eta"] != "None" else None,        
 
     )
 
@@ -125,6 +153,37 @@ def log_build():
         cur.close()
         conn.close()
         return jsonify({"message": "Build log successfully created"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route("/api/v1/update-action", methods=["POST"])
+def update_action():
+
+    build_info = request.get_json()
+    print(build_info,flush=True)
+
+    query = f"""
+        UPDATE actions
+        SET 
+            {build_info['status_name']} = %s,
+            {build_info['eta_name']} = %s
+        WHERE action_uid = %s
+    """
+    
+    data = (
+        build_info["status"],
+        build_info["eta"],
+        build_info["action_uid"]
+    )
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(query,data)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"message": "Build log successfully updated"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     

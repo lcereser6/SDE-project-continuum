@@ -8,7 +8,7 @@
       <meta name="description" content="">
       <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
       <meta name="generator" content="Hugo 0.118.2">
-      <meta http-equiv="refresh" content="200">
+      <meta http-equiv="refresh" content="3">
       <script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/cdb.min.js"></script>
       <script src="https://kit.fontawesome.com/9d1d9a82d2.js" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
@@ -29,6 +29,16 @@
          font-size: 3.5rem;
          }
          }
+
+         .ok_action_class {
+         background-color: #0080004d;
+         }
+         .error_action_class {
+         background-color: #ff000066;
+         }
+
+         
+
          .stripes {
          -webkit-background-size: 50px 50px;
          -moz-background-size: 50px 50px;
@@ -316,11 +326,11 @@
                   <h1 class="h2"> {{ repo_info['name'] }} </h1>
                   <div class="btn-toolbar mb-2 mb-md-0">
                      <div class="btn-group me-2">
-                        <button id="fullProcessBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="fullProcess">Start Full process</button>
-                        <button id="vulnScanner" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="vulnScanner">Scan vulnerabilities</button>
-                        <button id="interpreterBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="builder">Build</button>
-                        <button id="testerBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="tester">Test</button>
-                        <button id="deployBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="deployer">Deploy</button>
+                        <button id="fullProcessBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="full">Start Full process</button>
+                        <button id="vulnScanner" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="scan">Scan vulnerabilities</button>
+                        <button id="interpreterBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="build">Build</button>
+                        <button id="testerBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="test">Test</button>
+                        <button id="deployBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="deploy">Deploy</button>
                      </div>
                   </div>
                </div>
@@ -367,21 +377,33 @@
             {% for action in action_list %}
             <div style="padding:10px; padding-left: 20px;">
                <div class="row ">
-                  <div class="col-2">{{action[2]}}</div>
-                  <div class="col-1"> {{action[15]}}</div>
-                  <div class="col-1">{{action[0]}}</div>
+                  <div class="col-2">{{ action["current_status"]}}</div>
+                  <div class="col-1"> {{action["action_type"]}}</div>
+                  <div class="col-1">{{action["action_uid"]}}</div>
                   <div class="col-2 d-flex gap-2 ">
-                     <button class="disabled btn btn-outline-secondary flex-grow-1 deg45 stripes"><span style="color: white; font-size: large;">{{action[16]}}</span> </button>
+                  
+                     <button class="btn btn-outline-secondary flex-grow-1 
+                     {% if action['scanner_status'] == 'OK' %}ok_action_class{% elif action['scanner_status'] == 'ERROR' %}error_action_class{% elif action['scanner_status'] == 'Pending' %}deg45 stripes{% elif action['scanner_status'] == 'N/A' %}disabled{% endif %}">
+                        <span style="color: white; font-size: large;">{{ action["scanner_eta"] }}</span>
+                     </button>
+                  
                   </div>
                   <div class="col-2 d-flex gap-2  ">
-                     <button class="disabled btn btn-outline-secondary flex-grow-1 deg45 stripes"><span style="color: white;  font-size: large;">{{action[11]}}</span></button>
+                     <button class="btn btn-outline-secondary flex-grow-1 
+                     {% if action['builder_status'] == 'OK' %}ok_action_class{% elif action['builder_status'] == 'ERROR' %}error_action_class{% elif action['builder_status'] == 'Pending' %}deg45 stripes{% elif action['builder_status'] == 'N/A' %}disabled{% endif %}">
+                        <span style="color: white; font-size: large;">{{ action["builder_eta"] }}</span>
+                     </button>
                   </div>
                   <div class="col-2 d-flex gap-2  ">
-                     <button class="disabled btn btn-outline-secondary flex-grow-1 deg45 stripes"><span style="color: white; font-size: large;">{{action[12]}}</span></button>
-                  </div>
+                     <button class="btn btn-outline-secondary flex-grow-1 
+                     {% if action['tester_status'] == 'OK' %}ok_action_class{% elif action['tester_status'] == 'ERROR' %}error_action_class{% elif action['tester_status'] == 'Pending' %}deg45 stripes{% elif action['tester_status'] == 'N/A' %}disabled{% endif %}">
+                        <span style="color: white; font-size: large;">{{ action["tester_eta"] }}</span>
+                     </button> </div>
                   <div class="col-2 d-flex gap-2 ">
-                     <button class="disabled btn btn-outline-secondary flex-grow-1 deg45 stripes"><span style="color: white; font-size: large;">{{action[13]}}</span></button>
-                  </div>
+                     <button class="btn btn-outline-secondary flex-grow-1 
+                     {% if action['deployer_status'] == 'OK' %}ok_action_class{% elif action['deployer_status'] == 'ERROR' %}error_action_class{% elif action['deployer_status'] == 'Pending' %}deg45 stripes{% elif action['deployer_status'] == 'N/A' %}disabled{% endif %}">
+                        <span style="color: white; font-size: large;">{{ action["deployer_eta"] }}</span>
+                     </button></div>
                </div>
             </div>
             <div class="b-example-divider" style="height: 15px;"></div>
@@ -427,31 +449,35 @@
              });
          });
       </script>
-      <script>
-         // border to 0
-         
-         const ctx = document.getElementById("chart").getContext('2d');
-         const myChart = new Chart(ctx, {
-           type: 'doughnut',
-           data: {
-             labels: ["success", "failed"],
-             datasets: [{
-               label: 'Success rate: ',
-               data: [80, 20],
-               backgroundColor: ["#0074D9", "#FF4136", "#2ECC40",
-               "#FF851B", "#7FDBFF", "#B10DC9", "#FFDC00",
-               "#001f3f", "#39CCCC", "#01FF70", "#85144b",
-               "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
-               borderWidth: 0
-             }]
-           },
-           options: {
-           animation: {
-               duration: 0
-           }
-         }
-         });
-      </script>
+  <script>
+   // Assuming action_list is passed to the template with counts for 'ok' and 'error' statuses
+   
+   {% set ok_count = action_list | selectattr('current_status', 'equalto', 'OK') | list | length %}
+   {% set error_count = action_list | selectattr('current_status', 'equalto', 'ERROR') | list | length %}
+   
+   const ctx = document.getElementById("chart").getContext('2d');
+   const myChart = new Chart(ctx, {
+     type: 'doughnut',
+     data: {
+       labels: ["SUCCESS", "FAILED"],
+       datasets: [{
+         label: 'Success rate: ',
+         // Use Jinja2 variables for data
+         data: [{{ ok_count }}, {{ error_count }}],
+         backgroundColor: [
+           "#008000", // Green for SUCCESS
+           "#ff0000", // Red for FAILED
+         ],
+         borderWidth: 0
+       }]
+     },
+     options: {
+       animation: {
+           duration: 0 // No animation
+       }
+     }
+   });
+ </script>
       <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
       <script src="{{ url_for('static', filename='dashboard.js') }}"></script>

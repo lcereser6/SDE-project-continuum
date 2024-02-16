@@ -9,7 +9,6 @@ import requests
 from requests_oauthlib import OAuth2Session
 
 
-
 profile_bp = Blueprint('profile', __name__)
 client_id = os.getenv("GITHUB_CLIENT_ID")
 
@@ -49,8 +48,17 @@ def repo_details(repo_name):
     #add the jwt token to the request header
     
     action_list = requests.get('http://dbproxy:5000/api/v1/read-action/'+repo_name, headers={'Authorization': 'Bearer '+jwt_token}).json()
-    print(action_list,flush=True)
+    
+    #filter through the action list and substitute the eta field with the subtraction of time_action_start and eta
+    
 
-
+    for action in action_list:
+        if action['scanner_status'] in ("OK", "N/A") and action['builder_status'] in ("OK", "N/A") and action['tester_status'] in ("OK", "N/A") and action['deployer_status'] in ("OK", "N/A"):
+            action['current_status'] = "OK"
+        elif action['scanner_status'] in ("PENDING") or action['builder_status'] in ("PENDING") or action['tester_status'] in ("PENDING") or action['deployer_status'] in ("PENDING"):
+            action['current_status'] = "PENDING"
+        else:
+            action['current_status'] = "ERROR"
+        
 
     return render_template('repo_details.html', repo_info=repo_info[0], action_list=action_list)
