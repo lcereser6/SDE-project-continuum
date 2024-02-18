@@ -8,14 +8,18 @@
       <meta name="description" content="">
       <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
       <meta name="generator" content="Hugo 0.118.2">
-      <meta http-equiv="refresh" content="3">
       <script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/cdb.min.js"></script>
       <script src="https://kit.fontawesome.com/9d1d9a82d2.js" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+ 
       <title>Dashboard Template · Bootstrap v5.3</title>
       <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+      <script>
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"</script>
       <style>
          .bd-placeholder-img {
          font-size: 1.125rem;
@@ -37,7 +41,12 @@
          background-color: #ff000066;
          }
 
-         
+         .nav-link{
+        color: white;
+      }
+      .nav-link:hover{
+        color: #712cf9;
+      }
 
          .stripes {
          -webkit-background-size: 50px 50px;
@@ -96,9 +105,10 @@
          -webkit-overflow-scrolling: touch;
          }
          .btn-bd-primary {
-         --bd-violet-bg: #712cf9;
+         border: 1px solid #5a23c8;
+         color: #dee2e6;
          --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-         --bs-btn-font-weight: 600;
+         --bs-btn-font-weight: 400;
          --bs-btn-color: var(--bs-white);
          --bs-btn-bg: var(--bd-violet-bg);
          --bs-btn-border-color: var(--bd-violet-bg);
@@ -138,54 +148,7 @@
             <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
          </symbol>
       </svg>
-      <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-         <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
-            id="bd-theme"
-            type="button"
-            aria-expanded="false"
-            data-bs-toggle="dropdown"
-            aria-label="Toggle theme (auto)">
-            <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
-               <use href="#circle-half"></use>
-            </svg>
-            <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-         </button>
-         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-            <li>
-               <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-                  <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-                     <use href="#sun-fill"></use>
-                  </svg>
-                  Light
-                  <svg class="bi ms-auto d-none" width="1em" height="1em">
-                     <use href="#check2"></use>
-                  </svg>
-               </button>
-            </li>
-            <li>
-               <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-                  <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-                     <use href="#moon-stars-fill"></use>
-                  </svg>
-                  Dark
-                  <svg class="bi ms-auto d-none" width="1em" height="1em">
-                     <use href="#check2"></use>
-                  </svg>
-               </button>
-            </li>
-            <li>
-               <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
-                  <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-                     <use href="#circle-half"></use>
-                  </svg>
-                  Auto
-                  <svg class="bi ms-auto d-none" width="1em" height="1em">
-                     <use href="#check2"></use>
-                  </svg>
-               </button>
-            </li>
-         </ul>
-      </div>
+
       <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
          <symbol id="calendar3" viewBox="0 0 16 16">
             <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
@@ -236,7 +199,7 @@
          </symbol>
       </svg>
       <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">PyContinuum</a>
+         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Continuum</a>
          <ul class="navbar-nav flex-row d-md-none">
             <li class="nav-item text-nowrap">
                <button class="nav-link px-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search">
@@ -268,7 +231,7 @@
                   <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
                      <ul class="nav flex-column">
                      <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+                        <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="#">
                            <svg class="bi">
                               <use xlink:href="#house-fill"/>
                            </svg>
@@ -292,7 +255,7 @@
                         </a>
                      </li>
                      <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="#">
+                        <a class="nav-link d-flex align-items-center gap-2" target="_blank" href="http://localhost:15673">
                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-memory" viewBox="0 0 16 16">
                               <path d="M1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.586a1 1 0 0 0 .707-.293l.353-.353a.5.5 0 0 1 .708 0l.353.353a1 1 0 0 0 .707.293H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1Zm.5 1h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm5 0h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm4.5.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4ZM2 10v2H1v-2h1Zm2 0v2H3v-2h1Zm2 0v2H5v-2h1Zm3 0v2H8v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Z"/>
                            </svg>
@@ -301,14 +264,7 @@
                      </li>
                      <hr class="my-3">
                      <ul class="nav flex-column mb-auto">
-                        <li class="nav-item">
-                           <a class="nav-link d-flex align-items-center gap-2" href="#">
-                              <svg class="bi">
-                                 <use xlink:href="#gear-wide-connected"/>
-                              </svg>
-                              Settings
-                           </a>
-                        </li>
+
                         <li class="nav-item">
                            <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('auth.logout') }}">
                               <svg class="bi">
@@ -326,11 +282,13 @@
                   <h1 class="h2"> {{ repo_info['name'] }} </h1>
                   <div class="btn-toolbar mb-2 mb-md-0">
                      <div class="btn-group me-2">
-                        <button id="fullProcessBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="full">Start Full process</button>
-                        <button id="vulnScanner" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="scan">Scan vulnerabilities</button>
-                        <button id="interpreterBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="build">Build</button>
-                        <button id="testerBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="test">Test</button>
-                        <button id="deployBtn" class="action-btn btn btn-outline-secondary" data-repo-name="{{ repo_info['name'] }}" data-action-type="deploy">Deploy</button>
+                        <button id="fullProcessBtn" class="action-btn btn btn-bd-primary" data-repo-name="{{ repo_info['name'] }}" data-action-type="full">Start Full process</button>
+                        <button id="interpreterBtn" class="action-btn btn btn-bd-primary" data-repo-name="{{ repo_info['name'] }}" data-action-type="build">Build</button>
+                        <button id="vulnScanner" class="action-btn btn btn-bd-primary" data-repo-name="{{ repo_info['name'] }}" data-action-type="scan">Scan vulnerabilities</button>
+          
+                        <button id="deployBtn" class="action-btn btn btn-bd-primary" data-repo-name="{{ repo_info['name'] }}" data-action-type="deploy">Deploy</button>
+                        <button id="testerBtn" class="action-btn btn btn-bd-primary" data-repo-name="{{ repo_info['name'] }}" data-action-type="test">Test</button>
+
                      </div>
                   </div>
                </div>
@@ -347,14 +305,7 @@
                      </ul>
                   </div>
                   <div class="col-3">
-                     <ul class="nav flex-column">
-                        <li class="nav-item mb-2">Hello</li>
-                        <li class="nav-item mb-2">Hello</li>
-                        <li class="nav-item mb-2">Hello</li>
-                        <li class="nav-item mb-2">Hello</li>
-                        <li class="nav-item mb-2">Hello</li>
-                        <li class="nav-item mb-2">Hello</li>
-                     </ul>
+ 
                   </div>
                   <div class="col-6" >
                      <div class="card chart-container text-body-secondary" style="margin-bottom: 30px;">
@@ -366,50 +317,101 @@
             <div class="b-example-divider"></div>
             <div class="row">
                <div class="col-2"><span class="text-body-secondary">Action start time <i class="bi bi-caret-down-fill"></i></i></span></div>
+               <div class="col-1"><span class="text-body-secondary">Overall result<i class="bi bi-caret-down-fill"></i></i></span></div>
                <div class="col-1"><span class="text-body-secondary">Action type <i class="bi bi-caret-down-fill"></i></i></span></div>
                <div class="col-1"><span class="text-body-secondary">Action hash <i class="bi bi-caret-down-fill"></i></i></span></div>
-               <div class="col-2"><span class="text-body-secondary">Vulnerability Scan time <i class="bi bi-caret-down-fill"></i></i></span></div>
                <div class="col-2"><span class="text-body-secondary">Build time <i class="bi bi-caret-down-fill"></i></i></span></div>
-               <div class="col-2"><span class="text-body-secondary">Test time <i class="bi bi-caret-down-fill"></i></i></span></div>
+               <div class="col-2"><span class="text-body-secondary">Vulnerability Scan time <i class="bi bi-caret-down-fill"></i></i></span></div>
                <div class="col-2"><span class="text-body-secondary">Deploy time <i class="bi bi-caret-down-fill"></i></i></span></div>
+               <div class="col-1"><span class="text-body-secondary">Test time <i class="bi bi-caret-down-fill"></i></i></span></div>
+
             </div>
             <div class="b-example-divider" style="height: 15px;"></div>
             {% for action in action_list %}
             <div style="padding:10px; padding-left: 20px;">
                <div class="row ">
-                  <div class="col-2">{{ action["current_status"]}}</div>
+                  <div class="col-2">{{ action["time_action_start"]}}</div>
+                  <div class="col-1"> {{action["current_status"]}}</div>
                   <div class="col-1"> {{action["action_type"]}}</div>
                   <div class="col-1">{{action["action_uid"]}}</div>
                   <div class="col-2 d-flex gap-2 ">
-                  
                      <button class="btn btn-outline-secondary flex-grow-1 
-                     {% if action['scanner_status'] == 'OK' %}ok_action_class{% elif action['scanner_status'] == 'ERROR' %}error_action_class{% elif action['scanner_status'] == 'Pending' %}deg45 stripes{% elif action['scanner_status'] == 'N/A' %}disabled{% endif %}">
+                     {% if action['builder_status'] == 'OK' %}ok_action_class{% elif action['builder_status'] == 'ERROR' %}error_action_class{% elif action['builder_status'] == 'Pending' %}deg45 stripes{% elif action['builder_status'] == 'N/A' %}disabled{% endif %}"
+                     data-bs-toggle="modal" 
+                     data-bs-target="#logsModal-{{ action['action_uid'] }}"
+                     data-service="builder">
+                        <span style="color: white; font-size: large;">{{ action["builder_eta"] }}</span>
+                     </button>
+
+                  </div>
+                  <div class="col-2 d-flex gap-2  ">
+         
+
+                     <button class="btn btn-outline-secondary flex-grow-1 
+                     {% if action['scanner_status'] == 'OK' %}ok_action_class{% elif action['scanner_status'] == 'ERROR' %}error_action_class{% elif action['scanner_status'] == 'Pending' %}deg45 stripes{% elif action['scanner_status'] == 'N/A' %}disabled{% endif %}"
+                     data-bs-toggle="modal" 
+                     data-bs-target="#logsModal-{{ action['action_uid'] }}"
+                     data-service="scanner">  
                         <span style="color: white; font-size: large;">{{ action["scanner_eta"] }}</span>
                      </button>
                   
+
                   </div>
                   <div class="col-2 d-flex gap-2  ">
+                   
                      <button class="btn btn-outline-secondary flex-grow-1 
-                     {% if action['builder_status'] == 'OK' %}ok_action_class{% elif action['builder_status'] == 'ERROR' %}error_action_class{% elif action['builder_status'] == 'Pending' %}deg45 stripes{% elif action['builder_status'] == 'N/A' %}disabled{% endif %}">
-                        <span style="color: white; font-size: large;">{{ action["builder_eta"] }}</span>
-                     </button>
-                  </div>
-                  <div class="col-2 d-flex gap-2  ">
-                     <button class="btn btn-outline-secondary flex-grow-1 
-                     {% if action['tester_status'] == 'OK' %}ok_action_class{% elif action['tester_status'] == 'ERROR' %}error_action_class{% elif action['tester_status'] == 'Pending' %}deg45 stripes{% elif action['tester_status'] == 'N/A' %}disabled{% endif %}">
-                        <span style="color: white; font-size: large;">{{ action["tester_eta"] }}</span>
-                     </button> </div>
-                  <div class="col-2 d-flex gap-2 ">
-                     <button class="btn btn-outline-secondary flex-grow-1 
-                     {% if action['deployer_status'] == 'OK' %}ok_action_class{% elif action['deployer_status'] == 'ERROR' %}error_action_class{% elif action['deployer_status'] == 'Pending' %}deg45 stripes{% elif action['deployer_status'] == 'N/A' %}disabled{% endif %}">
+                     {% if action['deployer_status'] == 'OK' %}ok_action_class{% elif action['deployer_status'] == 'ERROR' %}error_action_class{% elif action['deployer_status'] == 'Pending' %}deg45 stripes{% elif action['deployer_status'] == 'N/A' %}disabled{% endif %}"
+                     data-bs-toggle="modal" 
+                     data-bs-target="#logsModal-{{ action['action_uid'] }}"
+                     data-service="deployer"> 
                         <span style="color: white; font-size: large;">{{ action["deployer_eta"] }}</span>
-                     </button></div>
+                     </button>
+                  
+                  
+                  
+                  </div>
+                  <div class="col-1 d-flex gap-2 ">
+
+
+                     <button class="btn btn-outline-secondary flex-grow-1 
+                     {% if action['tester_status'] == 'OK' %}ok_action_class{% elif action['tester_status'] == 'ERROR' %}error_action_class{% elif action['tester_status'] == 'Pending' %}deg45 stripes{% elif action['tester_status'] == 'N/A' %}disabled{% endif %}"
+                     data-bs-toggle="modal" 
+                     data-bs-target="#logsModal-{{ action['action_uid'] }}"
+                     data-service="tester">  
+                        <span style="color: white; font-size: large;">{{ action["tester_eta"] }}</span>
+                     </button>
+             </div>
                </div>
             </div>
             <div class="b-example-divider" style="height: 15px;"></div>
+
+            <!-- Modal Structure -->
+<div class="modal fade" id="logsModal-{{ action['action_uid'] }}" tabindex="-1" aria-labelledby="logsModalLabel-{{ action['action_uid'] }}" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="logsModalLabel-{{ action['action_uid'] }}">Action Logs</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       </div>
+       <div class="modal-body">
+         <!-- Log content will be loaded here -->
+         <pre id="logsContent-{{ action['action_uid'] }}">Loading logs...</pre>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+       </div>
+     </div>
+   </div>
+ </div>
+
+
             {% endfor %}
          </div>
       </div>
+ 
+
+
+
       <script>
          // Add event listeners to all buttons with the class 'action-btn'
          document.querySelectorAll('.action-btn').forEach(button => {
@@ -454,19 +456,19 @@
    
    {% set ok_count = action_list | selectattr('current_status', 'equalto', 'OK') | list | length %}
    {% set error_count = action_list | selectattr('current_status', 'equalto', 'ERROR') | list | length %}
-   
-   const ctx = document.getElementById("chart").getContext('2d');
+   {% set pending = action_list | rejectattr('current_status', 'equalto', 'OK') | rejectattr('current_status', 'equalto', 'ERROR') | list | length %}   const ctx = document.getElementById("chart").getContext('2d');
    const myChart = new Chart(ctx, {
      type: 'doughnut',
      data: {
-       labels: ["SUCCESS", "FAILED"],
+       labels: ["SUCCESS", "FAILED", "WAITING"],
        datasets: [{
          label: 'Success rate: ',
          // Use Jinja2 variables for data
-         data: [{{ ok_count }}, {{ error_count }}],
+         data: [{{ ok_count }}, {{ error_count }}, {{ pending }}],
          backgroundColor: [
            "#008000", // Green for SUCCESS
            "#ff0000", // Red for FAILED
+           "#FFA500" // Orange for PENDING
          ],
          borderWidth: 0
        }]
@@ -478,9 +480,51 @@
      }
    });
  </script>
-      <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
-      <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+
+
+<script>
+ document.querySelectorAll('[data-bs-target^="#logsModal-"]').forEach(button => {
+  button.addEventListener('click', function () {
+    var actionUID = this.getAttribute('data-bs-target').split('-').slice(1).join('-');
+    var serviceType = this.getAttribute('data-service');
+    var logsContent = document.getElementById('logsContent-' + actionUID);
+    console.log('Fetching logs for action UID:', actionUID);
+    console.log('Service type:', serviceType);
+    logsContent.textContent = 'Loading logs...';
+
+    const jwtToken = 'YOUR_JWT_TOKEN_HERE';
+    fetch(`/logs?action_uid=${actionUID}&service=${serviceType}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${jwtToken}`,
+        'Accept': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      logsContent.textContent = ''; // Clear the existing content
+  if (data && data.length > 0) {
+    data.forEach(item => {
+      const logItem = document.createElement('p');
+      logItem.textContent = `Time: ${item.time}, Log Text: ${item.log_text}`;
+      logsContent.appendChild(logItem);
+    });
+  } else {
+    logsContent.textContent = 'No logs available.';
+  }
+    })
+    .catch(error => {
+      console.error('Error fetching logs:', error);
+      logsContent.textContent = 'Failed to load logs.';
+    });
+  });
+});
+
+ </script>
+
+     <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
+     <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
 </html>
 {% else %}
 <h1> Not Authorized</h1>

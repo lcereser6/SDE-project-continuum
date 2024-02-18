@@ -5,7 +5,7 @@ from flask import Flask, redirect, url_for, session, request, jsonify, render_te
 import os
 from jwt.exceptions import InvalidTokenError
 import psycopg2 as psycopg2
-
+from logQueue import LogQueue
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "supersecretkey")
 app.config['SESSION_TYPE'] = os.getenv("SESSION_TYPE")
@@ -13,6 +13,17 @@ app.config['SESSION_PERMANENT'] = os.getenv("SESSION_PERMANENT")
 app.config['SESSION_USE_SIGNER'] = os.getenv("SESSION_USE_SIGNER")
 app.config['SESSION_REDIS'] = redis.from_url('redis://redis:6379')
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+log_queue_host = os.getenv("LOG_QUEUE_HOST", "rabbitmq")
+log_queue_port = os.getenv("LOG_QUEUE_PORT", "5672")
+log_queue_name = os.getenv("LOG_QUEUE_NAME", "log-queue")
+db_config = {
+    "host": os.getenv("POSTGRES_HOST"),
+    "database": os.getenv("POSTGRES_DB"),
+    "user": os.getenv("POSTGRES_USER"),
+    "password": os.getenv("POSTGRES_PASSWORD"),
+    "port": os.getenv("POSTGRES_PORT")
+}
+log_queue = LogQueue(log_queue_host, log_queue_port, log_queue_name, db_config)
 
 
 @app.route("/")
@@ -45,6 +56,7 @@ def get_db_connection():
         port=os.getenv("POSTGRES_PORT")
     )
     return conn
+
 
 
 #get all actions for a repo filtered by user and ordered by latest, extract username from jwt token
@@ -157,6 +169,40 @@ def log_action():
         return jsonify({"error": str(e)}), 500
     
 
+@app.route("/api/v1/logs/<action_uid>/<service>", methods=["GET"])
+def get_logs(action_uid, service):
+    #username = validate_token(request.headers.get("Authorization").split(" ")[1])
+    username = "test"
+    print("action_uid", action_uid, flush=True)
+    print("service", service, flush=True)
+    if username is None:
+        return jsonify({"error": "Unauthorized"}), 401
+    else:
+        query = """
+            SELECT time, log_text
+            FROM logs
+            WHERE action_uid = %s AND service = %s
+            ORDER BY time
+        """
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute(query, (action_uid, service))
+            rows = cur.fetchall()
+            logs = [
+                {
+                    #convert the time string to isoformat
+                    "time": row[0],
+                    "log_text": row[1]
+                } for row in rows
+            ]
+            cur.close()
+            conn.close()
+            return jsonify(logs), 200
+        except Exception as e:
+            print(e, flush=True)
+            return jsonify({"error": str(e)}), 500
+
 @app.route("/api/v1/update-action", methods=["POST"])
 def update_action():
 
@@ -192,6 +238,8 @@ def update_action():
 if __name__ == "__main__":
 
     time.sleep(15)
+    log_queue.connect()
+    log_queue.start_consuming()
     app.run(debug=True, host="0.0.0.0")
     
 

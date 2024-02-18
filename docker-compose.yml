@@ -5,11 +5,11 @@ services:
     hostname: "rabbitmq"
     ports:
       - "5672:5672"
-      - "15672:15672"
+      - "15673:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-
+ 
   dashboard:
     build: 
       context: ./dashboard
@@ -47,14 +47,12 @@ services:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - FLASK_DEBUG=${FLASK_DEBUG}
 
-
-
-  
   builder:
     build: ./builder
     command: python builder.py
     volumes:
       - ./builder:/app
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - rabbitmq
     environment:
@@ -64,12 +62,16 @@ services:
       - OAUTHLIB_INSECURE_TRANSPORT=${OAUTHLIB_INSECURE_TRANSPORT}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - FLASK_DEBUG=${FLASK_DEBUG}
+      - log_queue_host=rabbitmq
+      - log_queue_port=5672
+      - log_queue_name=logs
 
   scanner:
     build: ./scanner
     command: python scanner.py
     volumes:
       - ./scanner:/app
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - rabbitmq
     environment:
@@ -112,6 +114,7 @@ services:
     command: python deployer.py
     volumes:
       - ./deployer:/app
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - rabbitmq
     environment:

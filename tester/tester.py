@@ -44,6 +44,7 @@ def trigger_scan():
         start_time = time.time()
         time.sleep(5)
         #generate a random boolean
+
         status ="ERROR" if bool(random.getrandbits(1)) else "OK"
         
         #write on the dbproxy

@@ -3,6 +3,8 @@
 
 
 from datetime import timedelta
+import io
+import subprocess
 import time
 import jwt
 import redis
@@ -10,8 +12,14 @@ from flask import Flask, redirect, url_for, session, request, jsonify, render_te
 import os
 from jwt.exceptions import InvalidTokenError
 import requests
+from logQueue import LogQueue
 
 app = Flask(__name__)
+log_queue_host = os.getenv("LOG_QUEUE_HOST", "rabbitmq")
+log_queue_port = os.getenv("LOG_QUEUE_PORT", "5672")
+log_queue_name = os.getenv("LOG_QUEUE_NAME", "log-queue")
+log_queue = LogQueue(log_queue_host, log_queue_port, log_queue_name)
+
 def format_time(total_seconds):
     # Split total_seconds into whole seconds and fractional seconds (milliseconds)
     whole_seconds = int(total_seconds)
@@ -35,14 +43,28 @@ def format_time(total_seconds):
 
 @app.route("/api/v1/trigger-scan" , methods=["POST"]) 
 def trigger_scan():
-    #get start time
     total_time_str = "N/A"
     status = request.json.get("status")
     dbproxy_url = 'http://dbproxy:5000/api/v1/update-action'
     action_uid = request.json.get("action_uid")
+    image_tag = request.json.get("image_tag")
     if status == "OK":
         start_time = time.time()
-        time.sleep(5)
+
+        try:
+            process = subprocess.Popen(["grype", image_tag], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            for line in io.TextIOWrapper(process.stdout, encoding="utf-8"):  # Ensure correct encoding
+                log_queue.send({"action_uid": action_uid,"service":"scanner","time":time.time(), "log": line})
+            process.wait()
+            if process.returncode == 0:
+                status = "OK"
+            else:
+                status = "ERROR"
+            
+            print(f"Image scanned successfully ")
+        except subprocess.CalledProcessError as e:
+            print(f"Error scanning image: {e}")
+            status = "ERROR"
         
         #write on the dbproxy
 
@@ -58,13 +80,15 @@ def trigger_scan():
     requests.post(dbproxy_url, json={"action_uid": action_uid, "status_name": "scanner_status", "status": status, "eta_name": "scanner_eta", "eta": total_time_str})
 
     return jsonify({
-        "status": status
+        "status": status,
+        "image_tag": image_tag
     })
 
 
 if __name__ == "__main__":
 
     time.sleep(15)
+    log_queue.connect()
     app.run(debug=True, host="0.0.0.0")
     
 
