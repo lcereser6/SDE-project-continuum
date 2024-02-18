@@ -55,11 +55,8 @@ def trigger_scan():
         try:
             process = subprocess.Popen(["docker", "run", image_tag], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for line in io.TextIOWrapper(process.stdout, encoding="utf-8"):  # Ensure correct encoding
-                log_queue.send({"action_uid": action_uid,"service":"scanner","time":time.time(), "log": line})
-            if process.returncode == 0:
+                log_queue.send({"action_uid": action_uid,"service":"deployer","time":time.time(), "log": line})
                 status = "OK"
-            else:
-                status = "ERROR"
             
         except subprocess.CalledProcessError as e:
             print(f"Deploy failed: {e}")

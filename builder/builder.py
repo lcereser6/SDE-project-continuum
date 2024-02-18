@@ -117,7 +117,6 @@ def trigger_scan():
 
 
 if __name__ == "__main__":
-
     
     time.sleep(15)
     log_queue.connect()
