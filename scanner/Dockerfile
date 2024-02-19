@@ -18,14 +18,22 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/d
 # Install Docker CLI
 RUN apt-get update && apt-get install -y docker-ce-cli
 
+# Install grype
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
-
+# Set the working directory inside the container to /app
 WORKDIR /app
+
+# Copy the current directory contents into the container at /app
 COPY . /app
-RUN pip install --no-cache-dir pipreqs 
+
+# Install pipreqs, a tool to automatically generate Python project dependencies
+RUN pip install --no-cache-dir pipreqs
+
+# Use pipreqs to generate a requirements.txt file based on imports
 RUN python -m  pipreqs.pipreqs . --force
+
+# Install Python dependencies from the generated requirements.txt file
 RUN pip install --no-cache-dir -r requirements.txt
-RUN ls -la /app  # This will list the contents of /app
 
 CMD ["python", "scanner.py"]

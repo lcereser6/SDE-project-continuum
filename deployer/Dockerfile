@@ -1,4 +1,5 @@
 FROM python:3.8-slim
+
 # Install system dependencies required for Docker CLI installation
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
@@ -6,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gnupg \
     lsb-release
+
 # Add Docker’s official GPG key
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
@@ -16,12 +18,20 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/d
 # Install Docker CLI
 RUN apt-get update && apt-get install -y docker-ce-cli
 
-
+# Set the working directory inside the container to /app
 WORKDIR /app
-COPY . /app
-RUN pip install --no-cache-dir pipreqs 
-RUN python -m  pipreqs.pipreqs . --force
-RUN pip install --no-cache-dir -r requirements.txt
-RUN ls -la /app  # This will list the contents of /app
 
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install pipreqs, a tool to automatically generate Python project dependencies
+RUN pip install --no-cache-dir pipreqs 
+
+# Use pipreqs to generate a requirements.txt file based on imports
+RUN python -m  pipreqs.pipreqs . --force
+
+# Install Python dependencies from the generated requirements.txt file
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Command to run the application
 CMD ["python", "deployer.py"]
