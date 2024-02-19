@@ -8,10 +8,6 @@ import psycopg2 as psycopg2
 from logQueue import LogQueue
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "supersecretkey")
-app.config['SESSION_TYPE'] = os.getenv("SESSION_TYPE")
-app.config['SESSION_PERMANENT'] = os.getenv("SESSION_PERMANENT")
-app.config['SESSION_USE_SIGNER'] = os.getenv("SESSION_USE_SIGNER")
-app.config['SESSION_REDIS'] = redis.from_url('redis://redis:6379')
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 log_queue_host = os.getenv("LOG_QUEUE_HOST", "rabbitmq")
 log_queue_port = os.getenv("LOG_QUEUE_PORT", "5672")
@@ -39,6 +35,11 @@ def info():
 
 
 def validate_token(token):
+    '''
+    Validates a JWT token and returns the username if valid.
+    :param token: JWT token to be validated.
+    :return: Username if token is valid, None otherwise.
+    '''
     try:
         # Decode token
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
@@ -59,11 +60,14 @@ def get_db_connection():
 
 
 
-#get all actions for a repo filtered by user and ordered by latest, extract username from jwt token
-@app.route("/api/v1/read-action/<repo>", methods=["GET"])
-
 @app.route("/api/v1/read-action/<repo>", methods=["GET"])
 def get_actions(repo):
+    '''
+    Retrieves all actions for a specified repository, filtered by user and ordered by the latest.
+    :param repo: The name of the repository to retrieve actions for.
+    :return: A list of actions for the specified repository.
+
+    '''
     username = validate_token(request.headers.get("Authorization").split(" ")[1])
     if username is None:
         return jsonify({"error": "Unauthorized"}), 401
@@ -113,6 +117,11 @@ def get_actions(repo):
 
 @app.route("/api/v1/write-action", methods=["POST"])
 def log_action():
+    '''
+    Logs a new action to the database.
+    :return: A JSON response indicating the success or failure of the operation.
+
+    '''
     build_info = request.get_json()
     query = """
         INSERT INTO actions (
@@ -171,40 +180,46 @@ def log_action():
 
 @app.route("/api/v1/logs/<action_uid>/<service>", methods=["GET"])
 def get_logs(action_uid, service):
-    #username = validate_token(request.headers.get("Authorization").split(" ")[1])
-    username = "test"
-    print("action_uid", action_uid, flush=True)
-    print("service", service, flush=True)
-    if username is None:
-        return jsonify({"error": "Unauthorized"}), 401
-    else:
-        query = """
-            SELECT time, log_text
-            FROM logs
-            WHERE action_uid = %s AND service = %s
-            ORDER BY time
-        """
-        try:
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute(query, (action_uid, service))
-            rows = cur.fetchall()
-            logs = [
-                {
-                    #convert the time string to isoformat
-                    "time": row[0],
-                    "log_text": row[1]
-                } for row in rows
-            ]
-            cur.close()
-            conn.close()
-            return jsonify(logs), 200
-        except Exception as e:
-            print(e, flush=True)
-            return jsonify({"error": str(e)}), 500
+    '''
+    Retrieves logs for a specific action and service.
+    :param action_uid: The unique identifier of the action to retrieve logs for.
+    :param service: The service to retrieve logs from.
+
+    :return: A list of logs for the specified action and service.
+    '''
+
+    query = """
+        SELECT time, log_text
+        FROM logs
+        WHERE action_uid = %s AND service = %s
+        ORDER BY time
+    """
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(query, (action_uid, service))
+        rows = cur.fetchall()
+        logs = [
+            {
+                #convert the time string to isoformat
+                "time": row[0],
+                "log_text": row[1]
+            } for row in rows
+        ]
+        cur.close()
+        conn.close()
+        return jsonify(logs), 200
+    except Exception as e:
+        print(e, flush=True)
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/v1/update-action", methods=["POST"])
 def update_action():
+    '''
+    Updates the status and ETA of an action in the database.
+    :return: A JSON response indicating the success or failure of the operation.
+
+    '''
 
     build_info = request.get_json()
     print(build_info,flush=True)
